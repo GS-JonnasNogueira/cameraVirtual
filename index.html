@@ -15,7 +15,7 @@
       <div class="columns">
         <div class="column is-four-fifths">
           <h1 class="title">
-            JavaScript Camera
+            Foto da carga
           </h1>
           <video autoplay id="video"></video>
           <button class="button is-hidden" id="btnPlay">
@@ -37,11 +37,11 @@
             <span class="icon">
               <i class="fas fa-sync-alt"></i>
             </span>
-            <span>Switch camera</span>
+            <span>Trocar câmera</span>
           </button>
         </div>
         <div class="column">
-          <h2 class="title">Screenshots</h2>
+          <h2 class="title">Fotos</h2>
           <div id="screenshots"></div>
         </div>
       </div>
@@ -58,7 +58,6 @@
   </footer>
 
   <canvas class="is-hidden" id="canvas"></canvas>
-  <script src="script.js"></script>
 </body>
 
 <script>
@@ -67,11 +66,11 @@
         !"mediaDevices" in navigator ||
         !"getUserMedia" in navigator.mediaDevices
     ) {
-        alert("Camera API is not available in your browser");
+        alert("A câmera não está disponível no seu navegador");
         return;
     }
 
-    // get page elements
+    // Pegando os elementos
     const video = document.querySelector("#video");
     const btnPlay = document.querySelector("#btnPlay");
     const btnPause = document.querySelector("#btnPause");
@@ -81,7 +80,6 @@
     const canvas = document.querySelector("#canvas");
     const devicesSelect = document.querySelector("#devicesSelect");
 
-    // video constraints
     const constraints = {
         video: {
         width: {
@@ -97,28 +95,27 @@
         },
     };
 
-    // use front face camera
+    // Usando câmera frontal
     let useFrontCamera = true;
 
-    // current video stream
+    // Usando câmera traseira
     let videoStream;
 
-    // handle events
-    // play
+    // Iniciar
     btnPlay.addEventListener("click", function () {
         video.play();
         btnPlay.classList.add("is-hidden");
         btnPause.classList.remove("is-hidden");
     });
 
-    // pause
+    // Pausar
     btnPause.addEventListener("click", function () {
         video.pause();
         btnPause.classList.add("is-hidden");
         btnPlay.classList.remove("is-hidden");
     });
 
-    // take screenshot
+    // Tirar foto
     btnScreenshot.addEventListener("click", function () {
         const img = document.createElement("img");
         canvas.width = video.videoWidth;
@@ -128,14 +125,14 @@
         screenshotsContainer.prepend(img);
     });
 
-    // switch camera
+    // Trocando câmera
     btnChangeCamera.addEventListener("click", function () {
         useFrontCamera = !useFrontCamera;
 
         initializeCamera();
     });
 
-    // stop video stream
+    // Parando foto
     function stopVideoStream() {
         if (videoStream) {
         videoStream.getTracks().forEach((track) => {
@@ -144,7 +141,7 @@
         }
     }
 
-    // initialize
+    // Carregando câmera
     async function initializeCamera() {
         stopVideoStream();
         constraints.video.facingMode = useFrontCamera ? "user" : "environment";
@@ -153,7 +150,7 @@
         videoStream = await navigator.mediaDevices.getUserMedia(constraints);
         video.srcObject = videoStream;
         } catch (err) {
-        alert("Could not access the camera");
+        alert("Não foi possível acessar a câmera.");
         }
     }
 
