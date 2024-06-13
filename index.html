@@ -9,153 +9,167 @@
   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 </head>
 
+<style>
+  .is-hidden, #imagem{
+    display:none;
+  }
+</style>
+
 <body>
-  <section class="section">
-    <div class="container">
-      <div class="columns">
-        <div class="column is-four-fifths">
-          <h1 class="title">
-            Foto da carga
-          </h1>
-          <video autoplay id="video"></video>
-          <button class="button is-hidden" id="btnPlay">
-            <span class="icon is-small">
-              <i class="fas fa-play"></i>
-            </span>
-          </button>
-          <button class="button" id="btnPause">
-            <span class="icon is-small">
-              <i class="fas fa-pause"></i>
-            </span>
-          </button>
-          <button class="button is-success" id="btnScreenshot">
-            <span class="icon is-small">
-              <i class="fas fa-camera"></i>
-            </span>
-          </button>
-          <button class="button" id="btnChangeCamera">
-            <span class="icon">
-              <i class="fas fa-sync-alt"></i>
-            </span>
-            <span>Trocar câmera</span>
-          </button>
+  <section class='section'>
+    <div class='container'>
+      <div class='columns'>
+        <div class='column is-four-fifths'>
+        <h1 class='title'>
+          Foto da carga
+        </h1>
+        <video autoplay id='video'></video>
+        <button class='button is-success' id='btnScreenshot'>
+          <span class='icon is-small'>
+          <i class='fas fa-camera'></i>
+          Tirar foto
+          </span>
+        </button>
+        <button class='button is-hidden' id='btnPlay'>
+          <span class='icon is-small'>
+          <i class='fas fa-play'></i>
+          Destravar câmera
+          </span>
+        </button>
+        <button class='button' id='btnPause'>
+          <span class='icon is-small'>
+          <i class='fas fa-pause'></i>
+          Travar câmera
+          </span>
+        </button>
+        <button class='button' id='btnChangeCamera'>
+          <span class='icon'>
+          <i class='fas fa-sync-alt'></i>
+          </span>
+          <span>Trocar câmera</span>
+        </button>
         </div>
-        <div class="column">
-          <h2 class="title">Fotos</h2>
-          <div id="screenshots"></div>
+        <div class='column'>
+        <h2 class='title'>Fotos</h2>
+        <div id='screenshots'></div>
         </div>
       </div>
     </div>
   </section>
 
-  <footer class="footer">
-    <div class="content has-text-centered">
-      <p>
-        By <a href="https://www.webdevdrops.com/">Douglas Matoso</a> | <a
-          href="https://github.com/doug2k1/javascript-camera">Source code</a>
-      </p>
-    </div>
-  </footer>
-
-  <canvas class="is-hidden" id="canvas"></canvas>
+    <canvas class='is-hidden' id='canvas'></canvas>
 </body>
 
 <script>
     (function () {
-    if (
-        !"mediaDevices" in navigator ||
-        !"getUserMedia" in navigator.mediaDevices
-    ) {
-        alert("A câmera não está disponível no seu navegador");
-        return;
-    }
+				if (
+					!'mediaDevices' in navigator ||
+					!'getUserMedia' in navigator.mediaDevices
+				) {
+					alert('A câmera não está disponível no seu navegador');
+					return;
+				}
 
-    // Pegando os elementos
-    const video = document.querySelector("#video");
-    const btnPlay = document.querySelector("#btnPlay");
-    const btnPause = document.querySelector("#btnPause");
-    const btnScreenshot = document.querySelector("#btnScreenshot");
-    const btnChangeCamera = document.querySelector("#btnChangeCamera");
-    const screenshotsContainer = document.querySelector("#screenshots");
-    const canvas = document.querySelector("#canvas");
-    const devicesSelect = document.querySelector("#devicesSelect");
+				// Pegando os elementos
+				const video = document.querySelector('#video');
+				const btnPlay = document.querySelector('#btnPlay');
+				const btnPause = document.querySelector('#btnPause');
+				const btnScreenshot = document.querySelector('#btnScreenshot');
+				const btnChangeCamera = document.querySelector('#btnChangeCamera');
+				const screenshotsContainer = document.querySelector('#screenshots');
+				const canvas = document.querySelector('#canvas');
+				const devicesSelect = document.querySelector('#devicesSelect');
+				const imagemInput = document.querySelector('#imagem');
 
-    const constraints = {
-        video: {
-        width: {
-            min: 1280,
-            ideal: 1920,
-            max: 2560,
-        },
-        height: {
-            min: 720,
-            ideal: 1080,
-            max: 1440,
-        },
-        },
-    };
+				const constraints = {
+					video: {
+					width: {
+						min: 1280,
+						ideal: 1920,
+						max: 2560,
+					},
+					height: {
+						min: 720,
+						ideal: 1080,
+						max: 1440,
+					},
+					},
+				};
 
-    // Usando câmera frontal
-    let useFrontCamera = true;
+				// Usando câmera frontal
+				let useFrontCamera = true;
 
-    // Usando câmera traseira
-    let videoStream;
+				// Usando câmera traseira
+				let videoStream;
 
-    // Iniciar
-    btnPlay.addEventListener("click", function () {
-        video.play();
-        btnPlay.classList.add("is-hidden");
-        btnPause.classList.remove("is-hidden");
-    });
+				// Iniciar
+				btnPlay.addEventListener('click', function () {
+					video.play();
+					btnPlay.classList.add('is-hidden');
+					btnPause.classList.remove('is-hidden');
+				});
 
-    // Pausar
-    btnPause.addEventListener("click", function () {
-        video.pause();
-        btnPause.classList.add("is-hidden");
-        btnPlay.classList.remove("is-hidden");
-    });
+				// Pausar
+				btnPause.addEventListener('click', function () {
+					video.pause();
+					btnPause.classList.add('is-hidden');
+					btnPlay.classList.remove('is-hidden');
+				});
 
-    // Tirar foto
-    btnScreenshot.addEventListener("click", function () {
-        const img = document.createElement("img");
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext("2d").drawImage(video, 0, 0);
-        img.src = canvas.toDataURL("image/png");
-        screenshotsContainer.prepend(img);
-    });
+				// Tirar foto
+				btnScreenshot.addEventListener('click', function () {
+					screenshotsContainer.innerHTML = '';
+					const img = document.createElement('img');
+					canvas.width = video.videoWidth;
+					canvas.height = video.videoHeight;
+					canvas.getContext('2d').drawImage(video, 0, 0);
+					const imageDataUrl = canvas.toDataURL('image/png');
+					img.src = imageDataUrl;
+					screenshotsContainer.prepend(img);
 
-    // Trocando câmera
-    btnChangeCamera.addEventListener("click", function () {
-        useFrontCamera = !useFrontCamera;
+					fetch(imageDataUrl)
+						.then(res => res.blob())
+						.then(blob => {
+							const file = new File([blob], 'screenshot.png', { type: 'image/png' });
 
-        initializeCamera();
-    });
+							// Criar um DataTransfer para simular a seleção do arquivo
+							const dataTransfer = new DataTransfer();
+							dataTransfer.items.add(file);
+							imagemInput.files = dataTransfer.files;
+					});
+				});
 
-    // Parando foto
-    function stopVideoStream() {
-        if (videoStream) {
-        videoStream.getTracks().forEach((track) => {
-            track.stop();
-        });
-        }
-    }
+				// Trocando câmera
+				btnChangeCamera.addEventListener('click', function () {
+					useFrontCamera = !useFrontCamera;
+			
+					initializeCamera();
+				});
 
-    // Carregando câmera
-    async function initializeCamera() {
-        stopVideoStream();
-        constraints.video.facingMode = useFrontCamera ? "user" : "environment";
+				// Parando foto
+				function stopVideoStream() {
+					if (videoStream) {
+					videoStream.getTracks().forEach((track) => {
+						track.stop();
+					});
+					}
+				}
 
-        try {
-        videoStream = await navigator.mediaDevices.getUserMedia(constraints);
-        video.srcObject = videoStream;
-        } catch (err) {
-        alert("Não foi possível acessar a câmera.");
-        }
-    }
+				// Carregando câmera
+				async function initializeCamera() {
+					stopVideoStream();
+					constraints.video.facingMode = useFrontCamera ? 'user' : 'environment';
 
-    initializeCamera();
-    })();
+					try {
+					videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+					video.srcObject = videoStream;
+					} catch (err) {
+					alert('Não foi possível acessar a câmera.');
+					}
+				}
+			
+				initializeCamera();
+			})();
 </script>
 
 </html>
